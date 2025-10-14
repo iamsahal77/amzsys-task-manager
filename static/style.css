@@ -1,0 +1,73 @@
+/* ================================
+   Base tweaks on top of Bootstrap
+   ================================ */
+.card-title { font-weight: 600; }
+.list-group-item { border-left: 0; border-right: 0; }
+
+/* Wrap long descriptions nicely */
+.list-group-item p { white-space: pre-wrap; }
+
+/* Neutral badge background for timestamps */
+.badge.text-bg-light { background-color: #f0f2f5; color: #333; }
+
+/* ================================
+   Dark theme overrides (data-theme=dark)
+   ================================ */
+:root[data-theme='dark'] {
+  --bs-body-bg: #0e0f10;
+  --bs-body-color: #e8e8e8;
+}
+:root[data-theme='dark'] body {
+  background-color: var(--bs-body-bg) !important;
+  color: var(--bs-body-color) !important;
+}
+:root[data-theme='dark'] .card { background-color: #1b1d20; color: #e8e8e8; }
+:root[data-theme='dark'] .list-group-item { background-color: #1b1d20; color: #e8e8e8; }
+:root[data-theme='dark'] .badge.text-bg-light { background-color: #2a2d31; color: #d0d0d0; }
+
+/* ================================
+   Modern look & feel
+   ================================ */
+.app-navbar {
+  background: linear-gradient(90deg, #0d6efd 0%, #6610f2 100%);
+  box-shadow: 0 6px 18px rgba(13,110,253,0.25);
+}
+.card {
+  border: 0;
+  border-radius: 16px;
+  box-shadow: 0 10px 24px rgba(0,0,0,0.06);
+}
+.card .btn { border-radius: 10px; }
+.btn { border-radius: 10px; }
+
+/* Progress bar */
+.progress {
+  height: 10px;
+  background-color: #eef1f6;
+  border-radius: 999px;
+  overflow: hidden;
+}
+.progress-bar {
+  background: linear-gradient(90deg, #20c997 0%, #0d6efd 100%);
+}
+
+/* List item hover affordance */
+.list-group-item { transition: background-color .2s ease, transform .05s ease; }
+.list-group-item:hover { background-color: #f9fbff; }
+:root[data-theme='dark'] .list-group-item:hover { background-color: #23262b; }
+
+/* Badge palette (lighter, friendlier) */
+.badge { border-radius: 999px; }
+.text-bg-warning { color: #7a5600 !important; background-color: #ffe8a1 !important; }
+.text-bg-danger { background-color: #ffb3b3 !important; }
+.text-bg-success { background-color: #b9f6d0 !important; color: #0b6b3a !important; }
+.text-bg-info { background-color: #b9e6ff !important; color: #054c75 !important; }
+
+/* Toast shape */
+.toast { border-radius: 12px; }
+
+/* Inputs */
+.form-control, .form-select { border-radius: 10px; }
+
+/* Dark navbar brand color */
+:root[data-theme='dark'] .navbar-dark .navbar-brand { color: #e8e8e8; }

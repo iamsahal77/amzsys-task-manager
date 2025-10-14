@@ -1,0 +1,171 @@
+{% extends 'base.html' %} {% block content %}
+<div class="row g-4">
+  <!-- Dashboard summary card -->
+  <div class="col-12">
+    <div class="card shadow-sm mb-2">
+      <div class="card-body d-flex align-items-center justify-content-between flex-wrap gap-3">
+        <div>
+          <h5 class="card-title mb-1 d-flex align-items-center gap-2"><i class="bi bi-speedometer2"></i> Dashboard</h5>
+          <div class="text-muted small">
+            Completed {{ stats.completed }} of {{ stats.total }} tasks
+            {% if stats.total %}
+            ({{ stats.progress_pct }}%)
+            {% endif %}
+            · Done today: {{ stats.done_today }}
+          </div>
+        </div>
+        <div class="flex-grow-1" style="min-width: 240px;">
+          <div class="progress" role="progressbar" aria-valuenow="{{ stats.progress_pct }}" aria-valuemin="0" aria-valuemax="100">
+            <div class="progress-bar" style="width: {{ stats.progress_pct }}%;"></div>
+          </div>
+        </div>
+        <div class="d-flex align-items-center gap-2">
+          <button id="themeToggle" class="btn btn-outline-secondary btn-sm"><i class="bi bi-moon-stars"></i> Toggle Theme</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Add task form -->
+  <div class="col-12 col-lg-4">
+    <div class="card shadow-sm">
+      <div class="card-body">
+        <h5 class="card-title mb-3 d-flex align-items-center gap-2"><i class="bi bi-plus-circle"></i> Add New Task</h5>
+        <form method="post" action="{{ url_for('add') }}">
+          <div class="mb-3">
+            <label class="form-label">Title</label>
+            <input type="text" name="title" class="form-control" placeholder="e.g., 30 min workout" required />
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Description (optional)</label>
+            <textarea name="description" class="form-control" rows="3" placeholder="Add some details..."></textarea>
+          </div>
+          <div class="row g-2 mb-3">
+            <div class="col-12 col-sm-6">
+              <label class="form-label">Category</label>
+              <input name="category" class="form-control" list="categoryList" placeholder="e.g., Work" />
+              <datalist id="categoryList">
+                {% for c in categories %}
+                <option value="{{ c }}"></option>
+                {% endfor %}
+              </datalist>
+            </div>
+            <div class="col-12 col-sm-6">
+              <label class="form-label">Priority</label>
+              <select name="priority" class="form-select">
+                <option value="Low">Low</option>
+                <option value="Medium" selected>Medium</option>
+                <option value="High">High</option>
+              </select>
+            </div>
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Due date</label>
+            <input type="date" name="due_date" class="form-control" />
+          </div>
+          <button class="btn btn-primary" type="submit"><i class="bi bi-plus"></i> Add Task</button>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- Filters + tasks list -->
+  <div class="col-12 col-lg-8">
+    <div class="card shadow-sm">
+      <div class="card-body">
+        <!-- Filters bar -->
+        <form class="row g-2 align-items-end mb-3" method="get" action="{{ url_for('index') }}">
+          <div class="col-12 col-md-4">
+            <label class="form-label">Search</label>
+            <div class="input-group">
+              <span class="input-group-text"><i class="bi bi-search"></i></span>
+              <input type="search" name="q" value="{{ filters.q }}" class="form-control" placeholder="Search tasks" />
+            </div>
+          </div>
+          <div class="col-6 col-md-3">
+            <label class="form-label">Status</label>
+            <select name="status" class="form-select">
+              <option value="" {% if not filters.status %}selected{% endif %}>All</option>
+              <option value="pending" {% if filters.status=='pending' %}selected{% endif %}>Pending</option>
+              <option value="completed" {% if filters.status=='completed' %}selected{% endif %}>Completed</option>
+            </select>
+          </div>
+          <div class="col-6 col-md-3">
+            <label class="form-label">Category</label>
+            <select name="category" class="form-select">
+              <option value="" {% if not filters.category %}selected{% endif %}>All</option>
+              {% for c in categories %}
+              <option value="{{ c }}" {% if filters.category==c %}selected{% endif %}>{{ c }}</option>
+              {% endfor %}
+            </select>
+          </div>
+          <div class="col-6 col-md-2">
+            <label class="form-label">Sort</label>
+            <select name="sort" class="form-select">
+              <option value="created" {% if filters.sort=='created' %}selected{% endif %}>Created</option>
+              <option value="priority" {% if filters.sort=='priority' %}selected{% endif %}>Priority</option>
+              <option value="due_date" {% if filters.sort=='due_date' %}selected{% endif %}>Due date</option>
+              <option value="title" {% if filters.sort=='title' %}selected{% endif %}>Title</option>
+            </select>
+          </div>
+          <div class="col-12">
+            <button class="btn btn-outline-primary btn-sm"><i class="bi bi-funnel"></i> Apply</button>
+            <a class="btn btn-outline-secondary btn-sm" href="{{ url_for('index') }}"><i class="bi bi-arrow-counterclockwise"></i> Reset</a>
+          </div>
+        </form>
+
+        <!-- Task list -->
+        <h5 class="card-title mb-3 d-flex align-items-center gap-2"><i class="bi bi-list-task"></i> All Tasks</h5>
+        {% if tasks %}
+        <ul class="list-group list-group-flush">
+          {% for task in tasks %}
+          {% set pr = task['priority'] or 'Medium' %}
+          {% set badge_class = 'text-bg-secondary' %}
+          {% if pr == 'High' %}{% set badge_class = 'text-bg-danger' %}{% elif pr == 'Medium' %}{% set badge_class = 'text-bg-warning' %}{% else %}{% set badge_class = 'text-bg-success' %}{% endif %}
+          <li class="list-group-item d-flex align-items-start justify-content-between">
+            <div class="me-3 flex-grow-1">
+              <div class="d-flex align-items-center gap-2 flex-wrap">
+                <form method="post" action="{{ url_for('toggle', task_id=task['id']) }}">
+                  <button class="btn btn-sm {{ 'btn-success' if not task['status'] else 'btn-outline-secondary' }}" type="submit" data-bs-toggle="tooltip" data-bs-title="Toggle complete">
+                    {% if task['status'] %}<i class="bi bi-arrow-counterclockwise"></i> Mark Incomplete{% else %}<i class="bi bi-check2"></i> Mark Complete{% endif %}
+                  </button>
+                </form>
+                <strong class="{{ 'text-muted text-decoration-line-through' if task['status'] else '' }}">
+                  {{ task['title'] }}
+                </strong>
+                {% if task['category'] %}
+                <span class="badge text-bg-info"><i class="bi bi-folder2"></i> {{ task['category'] }}</span>
+                {% endif %}
+                <span class="badge {{ badge_class }}"><i class="bi bi-flag"></i> {{ pr }}</span>
+                {% if task['due_date'] %}
+                <span class="badge {{ 'text-bg-danger' if task['is_overdue'] else 'text-bg-light' }}">
+                  <i class="bi bi-calendar-event"></i> Due: {{ task['due_date'] }}
+                  {% if task['days_left_display'] is not none %}
+                    ({{ task['days_left_display'] }} days)
+                  {% endif %}
+                </span>
+                {% endif %}
+              </div>
+              {% if task['description'] %}
+              <p class="mb-1 small {{ 'text-muted text-decoration-line-through' if task['status'] else '' }}">{{ task['description'] }}</p>
+              {% endif %}
+              <span class="badge text-bg-light small"><i class="bi bi-clock-history"></i> Created: {{ task['created_at'] }}</span>
+            </div>
+            <div class="d-flex gap-2">
+              <a href="{{ url_for('edit', task_id=task['id']) }}" class="btn btn-sm btn-outline-primary" data-bs-toggle="tooltip" data-bs-title="Edit task"><i class="bi bi-pencil"></i> Edit</a>
+              <form method="post" action="{{ url_for('remove', task_id=task['id']) }}" class="js-confirm"
+                    data-confirm-message="Delete this task?" data-confirm-okay-class="btn-danger" data-confirm-okay-text="Delete">
+                <button type="submit" class="btn btn-sm btn-outline-danger" data-bs-toggle="tooltip" data-bs-title="Delete task"><i class="bi bi-trash"></i> Delete</button>
+              </form>
+            </div>
+          </li>
+          {% endfor %}
+        </ul>
+        {% else %}
+        <p class="text-muted mb-0">No tasks found. Adjust filters or add a task.</p>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
