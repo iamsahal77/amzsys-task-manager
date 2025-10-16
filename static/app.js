@@ -28,10 +28,12 @@
   // ================================
   document.querySelectorAll('.list-group-item').forEach((el, idx) => {
     el.style.opacity = 0;
+    el.style.transform = 'translateY(6px)';
     setTimeout(() => {
-      el.style.transition = 'opacity 240ms ease';
+      el.style.transition = 'opacity 320ms cubic-bezier(.2,.6,.2,1), transform 320ms cubic-bezier(.2,.6,.2,1)';
       el.style.opacity = 1;
-    }, 40 * idx);
+      el.style.transform = 'translateY(0)';
+    }, 50 * idx);
   });
 
   // ================================
@@ -62,23 +64,38 @@
 
     document.querySelectorAll('form.js-confirm').forEach((form) => {
       form.addEventListener('submit', (e) => {
+        // Allow natural submission if this submit was programmatically confirmed
+        if (form.dataset.confirmed === '1') {
+          // Clear the flag for future submissions
+          form.dataset.confirmed = '';
+          return; // do not prevent default
+        }
         e.preventDefault();
         pendingForm = form;
         const message = form.dataset.confirmMessage || 'Are you sure?';
         const okClass = form.dataset.confirmOkayClass || 'btn-primary';
         const okText = form.dataset.confirmOkayText || 'OK';
-        confirmBodyEl.textContent = message;
-        confirmOkBtn.className = 'btn ' + okClass;
-        confirmOkBtn.textContent = okText;
-        confirmModal.show();
+        if (confirmBodyEl) confirmBodyEl.textContent = message;
+        if (confirmOkBtn) {
+          confirmOkBtn.className = 'btn ' + okClass;
+          confirmOkBtn.textContent = okText;
+        }
+        try { confirmModal.show(); } catch (_) { /* noop */ }
       });
     });
 
     confirmOkBtn && confirmOkBtn.addEventListener('click', () => {
-      if (pendingForm) {
-        confirmModal.hide();
-        setTimeout(() => pendingForm.submit(), 50);
-        pendingForm = null;
+      const form = pendingForm;
+      pendingForm = null;
+      try { confirmModal.hide(); } catch (_) { /* noop */ }
+      if (form) {
+        // Mark as confirmed and submit without re-triggering the confirm handler
+        form.dataset.confirmed = '1';
+        if (typeof form.submit === 'function') {
+          form.submit(); // bypasses submit event
+        } else if (typeof form.requestSubmit === 'function') {
+          form.requestSubmit();
+        }
       }
     });
   }
@@ -97,14 +114,13 @@
     btn.addEventListener('click', function (e) {
       const circle = document.createElement('span');
       const diameter = Math.max(btn.clientWidth, btn.clientHeight);
-      const radius = diameter / 2;
       circle.style.width = circle.style.height = `${diameter}px`;
       circle.style.position = 'absolute';
       circle.style.borderRadius = '50%';
       circle.style.transform = 'translate(-50%, -50%)';
       circle.style.left = `${e.clientX - btn.getBoundingClientRect().left}px`;
       circle.style.top = `${e.clientY - btn.getBoundingClientRect().top}px`;
-      circle.style.background = 'rgba(255,255,255,0.4)';
+      circle.style.background = 'rgba(255,255,255,0.45)';
       circle.style.pointerEvents = 'none';
       circle.style.animation = 'ripple 600ms ease-out';
       btn.style.position = 'relative';

@@ -1,73 +1,159 @@
 /* ================================
-   Base tweaks on top of Bootstrap
+   Design system
    ================================ */
-.card-title { font-weight: 600; }
-.list-group-item { border-left: 0; border-right: 0; }
+:root {
+  /* Minimal Monochrome palette */
+  --app-bg-start: #f6f7f9;
+  --app-bg-end: #eceff3;
+  --app-surface: rgba(255, 255, 255, 0.85);
+  --app-surface-strong: rgba(255, 255, 255, 0.95);
+  --app-text: #1a1d21;
+  --app-border: rgba(20, 24, 40, 0.08);
+  --app-shadow: 0 6px 18px rgba(0, 0, 0, 0.06);
+}
 
-/* Wrap long descriptions nicely */
-.list-group-item p { white-space: pre-wrap; }
-
-/* Neutral badge background for timestamps */
-.badge.text-bg-light { background-color: #f0f2f5; color: #333; }
-
-/* ================================
-   Dark theme overrides (data-theme=dark)
-   ================================ */
+/* Dark theme */
 :root[data-theme='dark'] {
-  --bs-body-bg: #0e0f10;
-  --bs-body-color: #e8e8e8;
+  /* Dark monochrome */
+  --bs-body-bg: #0f1115;
+  --bs-body-color: #e6e7ea;
+  --app-bg-start: #0f1115;
+  --app-bg-end: #0c0e12;
+  --app-surface: rgba(28, 30, 36, 0.8);
+  --app-surface-strong: rgba(36, 39, 46, 0.9);
+  --app-text: #e6e7ea;
+  --app-border: rgba(255, 255, 255, 0.08);
+  --app-shadow: 0 8px 22px rgba(0, 0, 0, 0.4);
 }
-:root[data-theme='dark'] body {
-  background-color: var(--bs-body-bg) !important;
-  color: var(--bs-body-color) !important;
-}
-:root[data-theme='dark'] .card { background-color: #1b1d20; color: #e8e8e8; }
-:root[data-theme='dark'] .list-group-item { background-color: #1b1d20; color: #e8e8e8; }
-:root[data-theme='dark'] .badge.text-bg-light { background-color: #2a2d31; color: #d0d0d0; }
 
 /* ================================
-   Modern look & feel
+   Background & layout
    ================================ */
-.app-navbar {
-  background: linear-gradient(90deg, #0d6efd 0%, #6610f2 100%);
-  box-shadow: 0 6px 18px rgba(13,110,253,0.25);
+body {
+  color: var(--app-text);
+  background:
+    radial-gradient(900px 500px at 0% -10%, rgba(255,255,255,0.5), transparent 40%),
+    radial-gradient(900px 500px at 120% 10%, rgba(255,255,255,0.35), transparent 40%),
+    linear-gradient(135deg, var(--app-bg-start), var(--app-bg-end));
+  min-height: 100vh;
+  font-family: 'Inter', system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
 }
+
+.app-navbar {
+  background: linear-gradient(90deg, rgba(255,255,255,0.5) 0%, rgba(255,255,255,0.4) 100%);
+  box-shadow: 0 6px 18px rgba(0,0,0,0.08);
+  border-bottom: 1px solid var(--app-border);
+  backdrop-filter: blur(10px);
+}
+
+main.container { position: relative; z-index: 1; }
+
+/* Glass panels */
 .card {
-  border: 0;
+  border: 1px solid var(--app-border);
   border-radius: 16px;
-  box-shadow: 0 10px 24px rgba(0,0,0,0.06);
+  background: var(--app-surface);
+  box-shadow: var(--app-shadow);
+  backdrop-filter: blur(8px);
 }
 .card .btn { border-radius: 10px; }
 .btn { border-radius: 10px; }
 
+/* Buttons polish */
+.btn-primary {
+  background: linear-gradient(180deg, #2f3339 0%, #1f2328 100%);
+  border: 0;
+  color: #f1f2f4;
+  box-shadow: 0 8px 16px rgba(0,0,0,0.18);
+}
+.btn-primary:hover { box-shadow: 0 10px 18px rgba(0,0,0,0.22); }
+.btn-outline-primary { border-color: rgba(0,0,0,0.25); color: #1a1d21; }
+.btn-outline-danger { border-color: rgba(0,0,0,0.25); color: #6f1d1b; }
+
 /* Progress bar */
 .progress {
   height: 10px;
-  background-color: #eef1f6;
+  background-color: rgba(0,0,0,0.06);
   border-radius: 999px;
   overflow: hidden;
 }
-.progress-bar {
-  background: linear-gradient(90deg, #20c997 0%, #0d6efd 100%);
+.progress-bar { background: linear-gradient(90deg, #2b2f35 0%, #13171c 100%); box-shadow: inset 0 1px 0 rgba(255,255,255,0.25); }
+
+/* List item styling */
+.list-group-item {
+  border-left: 0;
+  border-right: 0;
+  transition: transform .08s ease, background-color .2s ease, box-shadow .2s ease;
 }
+.list-group-item:hover { background-color: rgba(0,0,0,0.02); box-shadow: 0 8px 18px rgba(0,0,0,0.06); transform: translateY(-1px); }
+:root[data-theme='dark'] .list-group-item:hover { background-color: rgba(255,255,255,0.04); }
 
-/* List item hover affordance */
-.list-group-item { transition: background-color .2s ease, transform .05s ease; }
-.list-group-item:hover { background-color: #f9fbff; }
-:root[data-theme='dark'] .list-group-item:hover { background-color: #23262b; }
-
-/* Badge palette (lighter, friendlier) */
+/* Readability & badges */
+.list-group-item p { white-space: pre-wrap; }
 .badge { border-radius: 999px; }
-.text-bg-warning { color: #7a5600 !important; background-color: #ffe8a1 !important; }
-.text-bg-danger { background-color: #ffb3b3 !important; }
-.text-bg-success { background-color: #b9f6d0 !important; color: #0b6b3a !important; }
-.text-bg-info { background-color: #b9e6ff !important; color: #054c75 !important; }
-
-/* Toast shape */
-.toast { border-radius: 12px; }
+.badge.text-bg-light { background-color: #f2f4f7; color: #1a1d21; border: 1px solid rgba(0,0,0,0.06); }
+.text-bg-warning { color: #6e5a00 !important; background-color: #f5e6a1 !important; }
+.text-bg-danger { background-color: #ead0d6 !important; color: #7a2f3a !important; }
+.text-bg-success { background-color: #dbeee0 !important; color: #2f5f47 !important; }
+.text-bg-info { background-color: #d9e7f2 !important; color: #2a4a66 !important; }
 
 /* Inputs */
-.form-control, .form-select { border-radius: 10px; }
+.form-control, .form-select { border-radius: 10px; background: var(--app-surface-strong); border-color: var(--app-border); color: var(--app-text); }
+.form-control:focus, .form-select:focus { box-shadow: 0 0 0 .2rem rgba(25, 25, 28, .12); border-color: rgba(25,25,28,.28); }
 
-/* Dark navbar brand color */
+/* Toasts */
+.toast { border-radius: 12px; backdrop-filter: blur(6px); border: 1px solid var(--app-border); }
+
+/* Hero spacing (optional) */
+.hero-spacer { height: 8px; }
+
+/* Animations */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.fade-in-up { animation: fadeUp .6s cubic-bezier(.2,.6,.2,1) both; }
+.fade-in-up.delay-1 { animation-delay: .05s; }
+.fade-in-up.delay-2 { animation-delay: .1s; }
+.fade-in-up.delay-3 { animation-delay: .15s; }
+
+/* Animated gradient sheen */
+@keyframes bgShift {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background: radial-gradient(800px 400px at 20% -10%, rgba(255,255,255,0.25), transparent 40%),
+              radial-gradient(1000px 500px at 120% 10%, rgba(255,255,255,0.18), transparent 40%),
+              linear-gradient(120deg, var(--app-bg-start), var(--app-bg-end));
+  background-size: 200% 200%;
+  z-index: 0;
+  animation: bgShift 16s ease-in-out infinite;
+  pointer-events: none;
+}
+
+/* Neon glow utilities */
+/* Remove neon glow utilities for monochrome simplicity (left as no-ops) */
+.glow-cyan { text-shadow: none; }
+.glow-pink { text-shadow: none; }
+
+/* Title gradient utility */
+.title-gradient {
+  background: linear-gradient(180deg, #2f3339 0%, #1f2328 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent !important;
+}
+
+/* Dark mode specifics */
+:root[data-theme='dark'] body {
+  background:
+    radial-gradient(1200px 600px at -10% 0%, rgba(255,255,255,0.04), transparent 40%),
+    radial-gradient(1000px 500px at 120% 10%, rgba(255,255,255,0.05), transparent 40%),
+    linear-gradient(135deg, var(--app-bg-start), var(--app-bg-end));
+}
 :root[data-theme='dark'] .navbar-dark .navbar-brand { color: #e8e8e8; }

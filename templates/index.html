@@ -28,7 +28,7 @@
 
   <!-- Add task form -->
   <div class="col-12 col-lg-4">
-    <div class="card shadow-sm">
+    <div class="card shadow-sm fade-in-up">
       <div class="card-body">
         <h5 class="card-title mb-3 d-flex align-items-center gap-2"><i class="bi bi-plus-circle"></i> Add New Task</h5>
         <form method="post" action="{{ url_for('add') }}">
@@ -71,10 +71,10 @@
 
   <!-- Filters + tasks list -->
   <div class="col-12 col-lg-8">
-    <div class="card shadow-sm">
+    <div class="card shadow-sm fade-in-up">
       <div class="card-body">
         <!-- Filters bar -->
-        <form class="row g-2 align-items-end mb-3" method="get" action="{{ url_for('index') }}">
+        <form class="row g-3 align-items-end mb-4" method="get" action="{{ url_for('index') }}">
           <div class="col-12 col-md-4">
             <label class="form-label">Search</label>
             <div class="input-group">
@@ -130,13 +130,15 @@
                     {% if task['status'] %}<i class="bi bi-arrow-counterclockwise"></i> Mark Incomplete{% else %}<i class="bi bi-check2"></i> Mark Complete{% endif %}
                   </button>
                 </form>
-                <strong class="{{ 'text-muted text-decoration-line-through' if task['status'] else '' }}">
-                  {{ task['title'] }}
-                </strong>
-                {% if task['category'] %}
-                <span class="badge text-bg-info"><i class="bi bi-folder2"></i> {{ task['category'] }}</span>
-                {% endif %}
-                <span class="badge {{ badge_class }}"><i class="bi bi-flag"></i> {{ pr }}</span>
+                <div class="d-flex align-items-center gap-2">
+                  <strong class="{{ 'text-muted text-decoration-line-through' if task['status'] else '' }}">
+                    {{ task['title'] }}
+                  </strong>
+                  {% if task['category'] %}
+                  <span class="badge text-bg-info"><i class="bi bi-folder2"></i> {{ task['category'] }}</span>
+                  {% endif %}
+                  <span class="badge {{ badge_class }}"><i class="bi bi-flag"></i> {{ pr }}</span>
+                </div>
                 {% if task['due_date'] %}
                 <span class="badge {{ 'text-bg-danger' if task['is_overdue'] else 'text-bg-light' }}">
                   <i class="bi bi-calendar-event"></i> Due: {{ task['due_date'] }}
@@ -162,7 +164,10 @@
           {% endfor %}
         </ul>
         {% else %}
-        <p class="text-muted mb-0">No tasks found. Adjust filters or add a task.</p>
+        <div class="text-center py-5">
+          <div class="display-6 mb-2">Nothing here yet</div>
+          <p class="text-muted">Use the form on the left to add your first task.</p>
+        </div>
         {% endif %}
       </div>
     </div>
