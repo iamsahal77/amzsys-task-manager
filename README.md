@@ -1,8 +1,8 @@
 # Daily Task Tracker(Flask + sqlite)
 
-## 🌐 Deployed In Render 
-
 Level up your daily productivity with a clean, modern Flask app. This doc gives you a fast path to run it locally (on any OS), plus highlights of challenges and extra features added during the build.
+
+## 🌐 Deployed In Render 
 
 ## 🚀 Quick Start (Local)
 
