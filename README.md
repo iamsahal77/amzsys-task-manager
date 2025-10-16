@@ -1,27 +1,6 @@
-# Daily Task Tracker – Quick Guide & Notes
+# Daily Task Tracker(Flask + sqlite)
 
-## 🌐 Deploy to Render (free)
-
-1. Push this folder to a GitHub repository (public or private).
-2. Files added for you:
-   - `Procfile` → runs the app with `gunicorn app:app`
-   - `requirements.txt` → includes `gunicorn`
-   - `render.yaml` → one-click blueprint (optional)
-   - `runtime.txt` → pins Python version
-3. Option A – Blueprint deploy (fastest):
-   - In Render: New → Blueprint → Connect repository → pick this repo
-   - Render reads `render.yaml` and sets up the service automatically
-   - It will generate a `FLASK_SECRET_KEY` for you
-4. Option B – Manual Web Service:
-   - New → Web Service → Connect repo
-   - Build Command: `pip install -r requirements.txt`
-   - Start Command: `gunicorn app:app`
-   - Add environment variable: `FLASK_SECRET_KEY` with any strong value
-5. Click Deploy → wait for build → open your Render URL.
-
-Note on SQLite: Render’s free filesystem is ephemeral; `tasks.db` may reset after deploy/idle. For durable data, switch to a free Postgres (e.g., Neon) and I can adapt the app.
-
----
+## 🌐 Deployed In Render 
 
 Level up your daily productivity with a clean, modern Flask app. This doc gives you a fast path to run it locally (on any OS), plus highlights of challenges and extra features added during the build.
 
